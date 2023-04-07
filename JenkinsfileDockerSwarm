@@ -1,7 +1,7 @@
 node{
     def buildNumber = BUILD_NUMBER
     stage("Git CheckOut"){
-        git url: 'https://github.com/MithunTechnologiesDevOps/java-web-app-docker.git',branch: 'master'
+        git url: 'https://github.com/anushachakali/maven-web-application.git',branch: 'master'
     }
     
     stage(" Maven Clean Package"){
@@ -11,20 +11,20 @@ node{
     } 
     
     stage("Build Dokcer Image") {
-         sh "docker build -t dockerhandson/java-web-app:${buildNumber} ."
+         sh "docker build -t dockerhandson/maven-web-application:${buildNumber} ."
     }
     
     stage("Docker Push"){
         withCredentials([string(credentialsId: 'Docker_Hub_Pwd', variable: 'Docker_Hub_Pwd')]) {
           sh "docker login -u dockerhandson -p ${Docker_Hub_Pwd}"
         }
-        sh "docker push dockerhandson/java-web-app:${buildNumber}"
+        sh "docker push dockerhandson/maven-web-application:${buildNumber}"
         
     }
     
     // Remove local image in Jenkins Server
     stage("Remove Local Image"){
-        sh "docker rmi -f dockerhandson/java-web-app:${buildNumber}"
+        sh "docker rmi -f dockerhandson/maven-web-application:${buildNumber}"
     }
     
     stage("Deploy to docker swarm cluster"){
